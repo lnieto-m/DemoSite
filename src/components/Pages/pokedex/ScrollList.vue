@@ -1,6 +1,11 @@
 <template>
-    <div>
-        <div v-for="poke in pokelist" v-bind:key="poke.url">{{poke.name}}</div>
+    <div id="scrolllist">
+        <b-input-group id="search">
+            <b-form-input v-model="search" placeholder="Search..."></b-form-input>
+        </b-input-group>
+        <b-list-group id="list">
+            <b-list-group-item button v-for="poke in filteredPokemons" v-bind:key="poke.url" @click="$emit('update-poke', poke.url)">{{poke.name}}</b-list-group-item>
+        </b-list-group>
     </div>
 </template>
 
@@ -14,15 +19,21 @@ export default {
         return {
             loaded: false,
             pokelist: [],
-            count: 0,
-            error: "Nothing"
+            scrollPosition: 0,
+            error: "Nothing",
+            search: '',
+        }
+    },
+    computed: {
+        filteredPokemons() {
+            return this.pokelist.filter(poke => {
+                return poke.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+            })
         }
     },
     created() {
-        var url = "https://pokeapi.co/api/v2/pokemon?&limit=20"
-        // var pokemonList = []
-        // while (url != "") {
-            axios.get(url)
+        var url = "https://pokeapi.co/api/v2/pokemon?&limit=807"
+        axios.get(url)
             .then(res => {
                 this.pokelist = res.data.results;
                 this.count = res.data.count;
@@ -33,13 +44,21 @@ export default {
                 }
             })
             .catch(err => this.error = err);
-        // }
         this.loaded = true
-        // this.pokelist = pokemonList
-    }
+    },
 }
 </script>
 
 <style scoped>
+#scrolllist {
+    width: 30%;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+#list {
+    height: 90vh;
+    overflow: scroll;
+}
 
 </style>

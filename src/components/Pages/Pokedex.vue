@@ -1,8 +1,7 @@
 <template>
-    <div>
-        <h1>Pokedex</h1>
-        <ScrollList></ScrollList>
-        <PokemonMainVue></PokemonMainVue>
+    <div id="pokedex">
+        <ScrollList v-on:update-poke="update"></ScrollList>
+        <PokemonMainVue :url="url"></PokemonMainVue>
     </div>
 </template>
 
@@ -16,11 +15,22 @@ export default {
     components: {
         ScrollList,
         PokemonMainVue
+    },
+    data() {
+        return {
+            url: "",
+        }
+    },
+    methods: {
+        update: function (url) {
+            this.url = url
+        }
     }
-        
 }
 </script>
 
 <style scoped>
-
+#pokedex {
+    display: block;
+}
 </style>
