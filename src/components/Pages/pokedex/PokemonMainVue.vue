@@ -1,6 +1,7 @@
 <template>
     <div v-if="loaded==false" class="loaded">
         <img src="@/assets/grey_pokeball.png" class="center"/>
+        <!-- <img src="https://bulbapedia.bulbagarden.net/wiki/File:001MS.png" class="center" /> -->
     </div>
     <div v-else id="pokevue">{{pokemonInfo}}</div>
 </template>

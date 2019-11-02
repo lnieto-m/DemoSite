@@ -4,7 +4,12 @@
             <b-form-input v-model="search" placeholder="Search..."></b-form-input>
         </b-input-group>
         <b-list-group id="list">
-            <b-list-group-item button v-for="poke in filteredPokemons" v-bind:key="poke.url" @click="$emit('update-poke', poke.url)">{{poke.name}}</b-list-group-item>
+            <b-list-group-item button v-for="poke in filteredPokemons"
+                v-bind:key="poke.url"
+                @click="$emit('update-poke', poke.url)">
+                <img :src="poke.miniaUrl" />
+                {{poke.name}}
+            </b-list-group-item>
         </b-list-group>
     </div>
 </template>
@@ -35,13 +40,32 @@ export default {
         var url = "https://pokeapi.co/api/v2/pokemon?&limit=807"
         axios.get(url)
             .then(res => {
-                this.pokelist = res.data.results;
+                this.pokelist = res.data.results.map(poke => {
+                    var exception = [
+                        "tapu",
+                        "jangmo",
+                        "hakamo",
+                        "kommo",
+                        "mr",
+                        "mime",
+                        "nidoran",
+                        "ho",
+                        "type"
+                    ]
+                    var name = ""
+                    if (exception.includes(poke.name.split('-')[0]) == true) {
+                        name = poke.name
+                    } else {
+                        name = poke.name.split('-')[0]
+                    }
+                    return {
+                        name: name.charAt(0).toUpperCase() + name.slice(1),
+                        url: poke.url,
+                        miniaUrl: "https://img.pokemondb.net/sprites/sun-moon/icon/" + name +".png",
+                    }
+                });
                 this.count = res.data.count;
-                if (res.data.next == null) {
-                    url = ""
-                } else {
-                    url = res.data.next
-                }
+                
             })
             .catch(err => this.error = err);
         this.loaded = true
