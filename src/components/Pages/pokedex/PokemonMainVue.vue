@@ -4,12 +4,20 @@
         <!-- <img src="https://bulbapedia.bulbagarden.net/wiki/File:001MS.png" class="center" /> -->
     </div>
     <div v-else id="pokevue">
-        <img :src="spriteUrl" />
+        <div id="mainview">
+            <b-img style="max-height:100%;float:right" :src="spriteUrl" fluid></b-img>
+            <div style="float:left;margin-top:50px;">
+                {{pokemonInfo.id}} {{pokemonInfo.name}}<br/>
+                Height : {{pokemonInfo.height}} m<br/>
+                Weight : {{pokemonInfo.weight}} kg<br/>
+                <b-badge v-bind:style="{backgroundColor: typeTable[pokemonInfo.type[0]]}">{{pokemonInfo.type[0]}}</b-badge>
+                <b-badge v-if="pokemonInfo.type.length > 1" v-bind:style="{backgroundColor: typeTable[pokemonInfo.type[1]]}">{{pokemonInfo.type[1]}}</b-badge><br />
+            </div>
+        </div>
         <div>
-            {{pokemonInfo.id}} {{pokemonInfo.name}}
-            Height : {{pokemonInfo.height}} m
-            Weight : {{pokemonInfo.weight}} kg
-            {{pokemonInfo.description}}
+            <div>
+                {{pokemonInfo.description}}
+            </div>
             <div>
                 <div v-bind:key="name" v-for="(value, name) in pokemonInfo.stats" class="row mb-1">
                     <div class="col-sm-2">{{name}}:</div>
@@ -19,6 +27,16 @@
                         </b-progress> 
                     </div>
                 </div>
+            </div>
+            <div>
+                <b-tabs content-class="mt-3">
+                    <b-tab title="Evolution" active>
+
+                    </b-tab>
+                    <b-tab title="Forms">
+
+                    </b-tab>
+                </b-tabs>
             </div>
         </div>
         <!-- {{pokemonInfo}} -->
@@ -43,6 +61,7 @@ export default {
                 height: 0,
                 weight: 0,
                 description: "",
+                type: [],
                 stats: {
                     Hp :{value: 0, color: "0"},
                     Atk:{value: 0, color: "0"},
@@ -52,7 +71,27 @@ export default {
                     Speed:{value: 0, color: "0"}
                 },
             },
-            display: "Nothing to see here"
+            display: "Nothing to see here",
+            typeTable: {
+                Bug: "#a8b820",
+                Dark: "#ffffff",
+                Dragon: "#4c08ef",
+                Electric: "#f0c108",
+                Fairy: "#F98CFF",
+                Fighting: "#9d2721",
+                Fire: "#f08030",
+                Flying: "#a890f0",
+                Ghost: "#554374",
+                Grass: "#78c850",
+                Ground: "#d4a82f",
+                Ice: "#98d8d8",
+                Normal: "#a8a878",
+                Poison: "#a040a0",
+                Psychic: "#f61c5d",
+                Rock: "#93802d",
+                Steel: "#b8b8d0",
+                Water: "#386ceb"
+            }
         }
     },
     watch: {
@@ -118,6 +157,14 @@ export default {
                         Speed: {value: res.data.stats[0].base_stat, color: "#" + myRainbow.colourAt(res.data.stats[0].base_stat)}
                     }
 
+                    // Get types
+                    this.pokemonInfo.type = []
+                    this.pokemonInfo.type.push(res.data.types[0].type.name)
+                    if (res.data.types.length > 1) {
+                        this.pokemonInfo.type.push(res.data.types[1].type.name)
+                    }
+                    this.pokemonInfo.type.reverse()
+
                     // Get Pokedex entry. For some reason it is not included in the base request
                     var descriptionURL = 'https://pokeapi.co/api/v2/pokemon-species/'+res.data.id
                     axios.get(descriptionURL)
@@ -161,6 +208,10 @@ export default {
     margin-bottom: auto;
     margin-top: 30vh;
     width: 25vh;
+}
+
+#mainview {
+    height: 150px;
 }
 
 </style>

@@ -1,7 +1,12 @@
 <template>
   <div>
-    <b-navbar type="dark" variant="dark">
-      <router-link class="spacing" v-for="routes in links" v-bind:key="routes.id" :to="`${routes.page}`">{{routes.text}}</router-link>
+    <b-navbar toggleable="md" type="dark" variant="dark">
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+          <router-link class="spacing" v-for="routes in links" v-bind:key="routes.id" :to="`${routes.page}`">{{routes.text}}</router-link>
+        </b-navbar-nav>
+      </b-collapse>
     </b-navbar >
   </div>
 </template>
